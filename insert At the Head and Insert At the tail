@@ -1,0 +1,105 @@
+#define _CRT_SECURE_NO_WARNINGS
+
+
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
+typedef struct node
+{
+    int value;
+    struct  node* next;
+}NODE;
+
+void printList(NODE* head);
+NODE* insertAtHead(NODE* head, int newValue);
+NODE* insertaAtTheTail(NODE* head, int newValue);
+
+int main()
+{
+    int option, value;
+    NODE* listHead1 = NULL;
+
+    do
+    {
+        printf("### 0 - Print Linked List:  ###\n");
+        printf("### 1 - Insert at the head: ###\n");
+        printf("### 2 - Insert at the tail: ###\n");
+
+        scanf("%d", &option);
+
+        switch (option)
+        {
+        case 1: 
+            printf("Insert the value: ");
+            scanf("%d", &value);
+            listHead1 = insertAtHead(listHead1, value);
+            break;
+        case 2:
+            printf("Insert the value: ");
+            scanf("%d", &value);
+            listHead1 = insertaAtTheTail(listHead1, value);
+            break;
+        case 0:
+            break;
+        default:
+            puts("Invalid Option!");
+            break;
+        }
+        
+
+    } while (option != 0);
+
+    puts("\nLinked List\n");
+    printList(listHead1);
+    
+    return 0;
+}
+
+NODE* insertAtHead(NODE* head, int newValue)
+{
+    NODE* newNode = (NODE*)calloc(1, sizeof(NODE));
+    newNode->value = newValue;
+
+    if (head)
+        newNode->next = head;
+
+    return newNode;
+}
+
+NODE* insertaAtTheTail(NODE* head, int newValue)
+{
+    NODE* newNode = (NODE*)calloc(1, sizeof(NODE));
+    newNode->value = newValue;
+    if (head == NULL)
+        return newNode;
+    else
+    {
+        NODE* current = head;
+
+        while (current->next)
+            current = current->next;
+
+        current->next = newNode;
+
+        return head;
+
+
+    }
+}
+
+void printList(NODE* head)
+{
+    NODE* current;
+    current = head;
+    int i = 0;
+
+    while (current)
+    {
+        printf("Node %d: %d\n", i, current->value);
+        i++;
+        current = current->next;
+    }
+
+
+}
