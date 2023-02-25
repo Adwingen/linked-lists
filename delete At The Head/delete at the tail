@@ -1,0 +1,172 @@
+#define _CRT_SECURE_NO_WARNINGS
+
+
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
+typedef struct node
+{
+    int value;
+    struct  node* next;
+}NODE;
+
+void printList(NODE* head);
+NODE* insertAtHead(NODE* head, int newValue);
+NODE* insertaAtTheTail(NODE* head, int newValue);
+NODE* deleteAtTheHead(NODE* head);
+NODE* deletingAtTheTail(NODE* head);
+
+int main()
+{
+    int option, value;
+    NODE* listHead1 = NULL;
+
+    do
+    {
+        printf("### 0 - Print Linked List:  ###\n");
+        printf("### 1 - Insert at the head: ###\n");
+        printf("### 2 - Insert at the tail: ###\n");
+        printf("### 3 - Delete at the head: ###\n");
+        printf("### 4 - Delete at the tail: ###\n");
+        printf("### 9 - Exit aplication     ###\n");
+
+        scanf("%d", &option);
+
+        switch (option)
+        {
+        
+        case 0:
+            puts("\nLinked List\n");
+            printList(listHead1);
+            puts("");
+            break;
+        case 1: 
+            printf("Insert the value to put in the head: ");
+            scanf("%d", &value);
+            listHead1 = insertAtHead(listHead1, value);
+            break;
+        case 2:
+            printf("Insert the value to put in the tail: ");
+            scanf("%d", &value);
+            listHead1 = insertaAtTheTail(listHead1, value);
+            break;
+        case 3:
+            listHead1 = deleteAtTheHead(listHead1);
+            break;
+        case 4:
+            listHead1 = deletingAtTheTail(listHead1);
+            break;
+
+        case 9:
+            break;
+        default:
+            puts("Invalid Option!");
+            break;
+        }
+        
+
+    } while (option != 9);
+
+    return 0;
+}
+
+NODE* insertAtHead(NODE* head, int newValue)
+{
+    NODE* newNode = (NODE*)calloc(1, sizeof(NODE));
+    newNode->value = newValue;
+
+    if (head)
+        newNode->next = head;
+
+    return newNode;
+}
+
+NODE* insertaAtTheTail(NODE* head, int newValue)
+{
+    NODE* newNode = (NODE*)calloc(1, sizeof(NODE));
+    newNode->value = newValue;
+    if (head == NULL)
+        return newNode;
+    else
+    {
+        NODE* current = head;
+
+        while (current->next)
+            current = current->next;
+
+        current->next = newNode;
+
+        return head;
+
+    }
+}
+
+NODE* deleteAtTheHead(NODE* head)
+{
+    if (head == NULL)
+    {
+        printf("List is empty!\n");
+        return NULL;
+    }
+       
+    else
+    {
+        NODE* toReturn = head->next;
+        printf("Value deleted in the head %d: \n", head->value);
+        free(head);
+        return toReturn;
+    }
+
+}
+
+NODE* deletingAtTheTail(NODE* head)
+{
+    if (head == NULL)
+    {
+        printf("List is empty!\n");
+        return NULL;
+    }
+    else if (head->next == NULL)
+    {
+        printf("Value deleted in the tail %d: \n", head->value);
+        free(head);
+        return NULL;
+    }
+    else
+    {
+        NODE* current = head;
+        NODE* prev = current;
+
+        while (current->next)
+        {
+            prev = current;
+            current = current->next;
+        }
+
+        prev->next = NULL;
+        printf("Value deleted in the tail %d: \n", current->value);
+        free(current);
+        return head;
+
+    }
+        
+
+
+}
+
+void printList(NODE* head)
+{
+    NODE* current;
+    current = head;
+    int i = 0;
+
+    while (current)
+    {
+        printf("Node %d: %d\n", i, current->value);
+        i++;
+        current = current->next;
+    }
+
+
+}
