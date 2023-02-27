@@ -1,0 +1,495 @@
+#define _CRT_SECURE_NO_WARNINGS
+
+
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <time.h>
+
+
+typedef struct node
+{
+    int value;
+    struct  node* next;
+}NODE;
+
+void printList(NODE* head);
+
+NODE* insertAtHead(NODE* head, int newValue);
+NODE* insertaAtTheTail(NODE* head, int newValue);
+
+NODE* deleteAtTheHead(NODE* head);
+NODE* deletingAtTheTail(NODE* head);
+
+int lenghtList(NODE* head);
+int lenghtListRecursive(NODE* node);
+
+bool findValueRecursive(NODE* node, int findValue);
+int findMacthesRecursive(NODE* node, int findValue);
+void replaceValuesRecursive(NODE* node, int findValue, int replaceValue);
+
+NODE* deleteFirstMatch(NODE* head, int deleteValue, bool* wasDeleted);
+NODE* deleteAllTheMatch(NODE* head, int deleteValue, int* countNumberDelete);
+NODE* deleteAllTheMatchEfficient(NODE* head, int deleteValue, int* countNumberDelete);
+
+NODE* appendLists(NODE* head1, NODE* head2);
+NODE* reversingList(NODE* head);
+
+int main()
+{
+    int option, value, replaceValue;
+    int countDeleted = 0;
+    clock_t tic, toc;
+
+    NODE* listHead1 = NULL;
+    NODE* listHead2 = NULL;
+
+    do
+    {
+        printf("###             0 - Print Linked List:                    ###\n");
+        printf("###             1 - Insert at the head:                   ###\n");
+        printf("###             2 - Insert at the tail:                   ###\n");
+        printf("###             3 - Delete at the head:                   ###\n");
+        printf("###             4 - Delete at the tail:                   ###\n");
+        printf("###             5 - Find a value:                         ###\n");
+        printf("###             6 - Find a match values:                  ###\n");
+        printf("###             7 - Replace values:                       ###\n");
+        printf("###             8 - Delete first match:                   ###\n");
+        printf("###             9 - Delete all the match:                 ###\n");
+        printf("###             10 - Delete all the match better:         ###\n");
+        printf("###             11 - Insert at the tail in list2:         ###\n");
+        printf("###             12 - Append list1 with list2              ###\n");
+        printf("###             13 - Resersing list                       ###\n");
+        printf("###             99 - Exit aplication                      ###\n");
+
+        scanf("%d", &option);
+
+        switch (option)
+        {
+        
+        case 0:
+            puts("\nLinked List\n");
+            printList(listHead1);
+            printf("\nList Lenght: %d ", lenghtList(listHead1));
+            printf("\nList Lenght Recursive: %d \n", lenghtListRecursive(listHead1));
+            break;
+        case 1: 
+            printf("Insert the value to put in the head: ");
+            scanf("%d", &value);
+            listHead1 = insertAtHead(listHead1, value);
+            break;
+        case 2:
+            printf("Insert the value to put in the tail: ");
+            scanf("%d", &value);
+            listHead1 = insertaAtTheTail(listHead1, value);
+            break;
+        case 3:
+            listHead1 = deleteAtTheHead(listHead1);
+            break;
+        case 4:
+            listHead1 = deletingAtTheTail(listHead1);
+            break;
+        case 5:
+            printf("Insert a value to find: ");
+            scanf("%d", &value);
+            if (findValueRecursive(listHead1, value))
+                printf("The value %d exists in the list\n",value);
+            else
+                printf("The value %d don´t exists in the list\n",value);
+            break;
+        case 6:
+            printf("Insert a value to count a match: ");
+            scanf("%d", &value);
+            printf("The number of %d is %d\n", value, findMacthesRecursive(listHead1, value));
+            break;
+        case 7:
+            printf("Insert a value to replace: ");
+            scanf("%d", &value);
+            if (findMacthesRecursive(listHead1, value) == NULL)
+            {
+                printf("The value %d do not exist in the list\n", value);
+                break;
+            }
+            else
+            {
+                printf("Insert a value: ");
+                scanf("%d", &replaceValue);
+                
+                printf("Count of replaces of number %d to %d = %d\n", value, replaceValue, findMacthesRecursive(listHead1, value));
+
+                replaceValuesRecursive(listHead1, value, replaceValue);
+                break;
+            }
+        case 8:
+            printf("Insert a value to delete: ");
+            scanf("%d", &value);
+            bool deleted;
+            listHead1 = deleteFirstMatch(listHead1, value, &deleted);
+            if (deleted)
+            {
+                printf("Number %d was deleted from the list.\n",value);
+                break;
+            }
+            else
+            {
+                printf("Number %d not exist in the list.\n", value);
+                break;
+            }
+        case 9:
+            printf("Insert a value to delete all the values: ");
+            scanf("%d", &value);
+            tic = clock();
+            listHead1 = deleteAllTheMatch(listHead1, value, &countDeleted);
+            toc = clock();
+            if (countDeleted != 0)
+            {
+                printf("Number %d was deleted from the list %d times.\n", value,countDeleted);
+                printf("operation time : %fs\n",(double)(toc - tic) / CLOCKS_PER_SEC);
+                break;
+            }
+            else
+            {
+                printf("Number %d not exist in the list.\n", value);
+                break;
+            }
+        case 10:
+            printf("Insert a value to delete all the values: ");
+            scanf("%d", &value);
+            tic = clock();
+            listHead1 = deleteAllTheMatchEfficient(listHead1, value, &countDeleted);
+            toc = clock();
+            if (countDeleted != 0)
+            {
+                printf("Number %d was deleted from the list %d times.\n", value, countDeleted);
+                printf("operation time : %fs\n", (double)(toc - tic) / CLOCKS_PER_SEC);
+                break;
+            }
+            else
+            {
+                printf("Number %d not exist in the list.\n", value);
+                break;
+            }
+        case 11:
+            printf("Insert the value to put in the tail in list2: ");
+            scanf("%d", &value);
+            listHead2 = insertaAtTheTail(listHead2, value);
+            break;
+        case 12:
+            listHead1 = appendLists(listHead1, listHead2);
+            puts("\nLinked List\n");
+            printList(listHead1);
+            printf("\nList Lenght: %d ", lenghtList(listHead1));
+            printf("\nList Lenght Recursive: %d \n", lenghtListRecursive(listHead1));
+            break;
+        case 13:
+            listHead1 = reversingList(listHead1);
+            puts("\nLinked List Reversed\n");
+            printList(listHead1);
+            printf("\nList Lenght: %d ", lenghtList(listHead1));
+            printf("\nList Lenght Recursive: %d \n", lenghtListRecursive(listHead1));
+            break;
+        case 99:
+            break;
+        default:
+            puts("Invalid Option!");
+            break;
+        }
+        
+
+    } while (option != 99);
+
+    return 0;
+}
+
+NODE* reversingList(NODE* head)
+{
+    if (head == NULL)
+        return NULL;
+    if (head->next == NULL)
+        return head;
+
+    NODE* current = head;
+    NODE* nextNode = head->next;
+
+    current->next = NULL;
+
+    while (nextNode)
+    {
+        NODE* tmp = nextNode->next;
+        nextNode->next = current;
+        current = nextNode;
+        nextNode = tmp;
+    }
+    
+    return current;
+
+}
+
+NODE* appendLists(NODE* head1, NODE* head2)
+{
+    if (head1 == NULL)
+        return head2;
+
+    NODE* current = head1;
+    while (current->next)
+        current = current->next;
+
+    current->next = head2;
+    
+    return head1;
+    
+}
+
+NODE* insertAtHead(NODE* head, int newValue)
+{
+    NODE* newNode = (NODE*)calloc(1, sizeof(NODE));
+    newNode->value = newValue;
+
+    if (head)
+        newNode->next = head;
+
+    return newNode;
+}
+
+NODE* insertaAtTheTail(NODE* head, int newValue)
+{
+    NODE* newNode = (NODE*)calloc(1, sizeof(NODE));
+    newNode->value = newValue;
+    if (head == NULL)
+        return newNode;
+    else
+    {
+        NODE* current = head;
+
+        while (current->next)
+            current = current->next;
+
+        current->next = newNode;
+
+        return head;
+
+    }
+}
+
+NODE* deleteAtTheHead(NODE* head)
+{
+    if (head == NULL)
+    {
+        printf("List is empty!\n");
+        return NULL;
+    }
+       
+    else
+    {
+        NODE* toReturn = head->next;
+        printf("Value deleted in the head %d: \n", head->value);
+        free(head);
+        return toReturn;
+    }
+
+}
+
+NODE* deletingAtTheTail(NODE* head)
+{
+    if (head == NULL)
+    {
+        printf("List is empty!\n");
+        return NULL;
+    }
+    else if (head->next == NULL)
+    {
+        printf("Value deleted in the tail %d: \n", head->value);
+        free(head);
+        return NULL;
+    }
+    else
+    {
+        NODE* current = head;
+        NODE* prev = current;
+
+        while (current->next)
+        {
+            prev = current;
+            current = current->next;
+        }
+
+        prev->next = NULL;
+        printf("Value deleted in the tail %d: \n", current->value);
+        free(current);
+        return head;
+
+    }
+        
+
+
+}
+
+int lenghtListRecursive(NODE* node)
+{
+    if (node == NULL)
+        return 0;
+    else
+        return 1 + lenghtListRecursive(node->next);
+}
+
+
+int lenghtList(NODE* head)
+{
+    NODE* current;
+    current = head;
+    int lenght = 0;
+
+    while (current)
+    {
+        lenght++;
+        current = current->next;
+    }
+
+    return lenght;
+}
+
+bool findValueRecursive(NODE* node, int findValue)
+{
+    if (node == NULL)
+        return false;
+    else if (node->value == findValue)
+        return true;
+    else
+        return findValueRecursive(node->next, findValue);
+
+}
+
+int findMacthesRecursive(NODE* node, int findValue)
+{
+    if (node == NULL)
+        return 0;
+    else if (node->value == findValue)
+        return 1 + findMacthesRecursive(node->next, findValue);
+    else
+        return findMacthesRecursive(node->next, findValue);
+}
+
+void replaceValuesRecursive(NODE* node, int findValue, int replaceValue)
+{
+    if (node)
+    {
+        if (node->value == findValue)
+            node->value = replaceValue;
+
+        replaceValuesRecursive(node->next, findValue, replaceValue);
+    }
+}
+
+NODE* deleteFirstMatch(NODE* head, int deleteValue, bool *wasDeleted)
+{
+    if (head == NULL)
+    {
+        *wasDeleted = false;
+        return NULL;
+    }
+
+    if (head->value == deleteValue)
+    {
+        NODE* temp;
+        temp = head->next;
+        free(head);
+        *wasDeleted = true;
+        return temp;
+    }
+
+    NODE* current = head->next;
+    NODE* prev = head;
+
+    while (current)
+    {
+        if (current->value == deleteValue)
+        {
+            prev->next = current->next;
+            free(current);
+            *wasDeleted = true;
+            return head;
+        }
+        prev = current;
+        current = current->next;
+    }
+
+    *wasDeleted = false;
+    return head;
+
+}
+
+NODE* deleteAllTheMatch(NODE* head, int deleteValue, int* countNumberDelete)
+{
+    NODE* current = head;
+    bool deleted = false;
+    *countNumberDelete = 0;
+
+    do
+    {
+        current = deleteFirstMatch(current, deleteValue, &deleted);
+        if (deleted)
+            *countNumberDelete = *countNumberDelete + 1;
+
+    } while (deleted);
+
+
+    return current;
+}
+
+NODE* deleteAllTheMatchEfficient(NODE* head, int deleteValue, int* countNumberDelete)
+{
+    *countNumberDelete = 0;
+    if (head == NULL)
+        return NULL;
+
+    NODE* current,*temp, *newHead;
+    current = head;
+
+    while(current->value == deleteValue)
+    {
+        temp = current;
+        current = current->next;
+        free(temp);
+        *countNumberDelete = *countNumberDelete + 1;
+
+        if (current == NULL)
+            return NULL;
+    }
+
+    newHead = current;
+
+    while (current->next)
+    {
+        if (current->next->value == deleteValue)
+        {
+            temp = current->next;
+            current->next = current->next->next;
+            free(temp);
+            *countNumberDelete = *countNumberDelete+1;
+        }
+        else
+            current = current->next;
+    }
+
+    return newHead;
+
+}
+        
+
+void printList(NODE* head)
+{
+    NODE* current;
+    current = head;
+    int i = 0;
+
+    while (current)
+    {
+        printf("Node %d: %d\n", i, current->value);
+        i++;
+        current = current->next;
+    }
+
+
+}
+
