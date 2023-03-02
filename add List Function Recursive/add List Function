@@ -1,0 +1,112 @@
+
+
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <time.h>
+
+typedef struct node
+{
+	int value;
+	struct node *next;
+}NODE;
+
+
+void printList(NODE* head);
+NODE* insertaAtTheTail(NODE* head, int newValue);
+
+NODE* addListFunction(NODE* list1, NODE* list2);
+void addListFunctionRecursive(NODE* list1, NODE* list2);
+
+
+
+int main()
+{
+	NODE* listHead1 = NULL;
+	NODE* listHead2 = NULL;
+
+	printf("### List 1 ###\n");
+	listHead1 = insertaAtTheTail(listHead1, 5);
+	listHead1 = insertaAtTheTail(listHead1, 6);
+	listHead1 = insertaAtTheTail(listHead1, 7);
+	printList(listHead1);
+
+	printf("\n### List 2 ###\n");
+	listHead2 = insertaAtTheTail(listHead2, 3);
+	listHead2 = insertaAtTheTail(listHead2, 3);
+	listHead2 = insertaAtTheTail(listHead2, 1);
+	printList(listHead2);
+
+	printf("\n### List 1 after add ###\n");
+	listHead1 = addListFunction(listHead1, listHead2);
+	printList(listHead1);
+
+	printf("\n### List 1 after add recursive ###\n");
+	addListFunctionRecursive(listHead1, listHead2);
+	printList(listHead1);
+
+	return 0;
+}
+
+NODE* addListFunction(NODE* list1, NODE* list2)
+{
+	NODE* currentList1 = list1;
+	NODE* currentList2 = list2;
+
+	while (currentList1 && currentList2)
+	{
+		
+		currentList1->value = currentList1->value + currentList2->value;
+		currentList2 = currentList2->next;
+		currentList1 = currentList1->next;
+	}
+
+	return list1;
+
+}
+
+void addListFunctionRecursive(NODE* list1, NODE* list2)
+{
+	
+	if (list1 == NULL || list2 == NULL)
+		return;
+
+	list1->value = list1->value + list2->value;
+	addListFunctionRecursive(list1->next, list2->next);
+
+}
+
+
+NODE* insertaAtTheTail(NODE* head, int newValue)
+{
+	NODE* newNode = (NODE*)calloc(1, sizeof(NODE));
+	newNode->value = newValue;
+
+	if (head == NULL)
+		return newNode;
+	else
+	{
+		NODE* current = head;
+
+		while (current->next)
+			current = current->next;
+
+		current->next = newNode;
+
+		return head;
+
+	}
+}
+
+void printList(NODE* head)
+{
+	NODE* current = head;
+	int i = 0;
+	while (current)
+	{
+		printf("Node %d: %d\n", i, current->value);
+		i++;
+		current = current->next;
+	}
+}
